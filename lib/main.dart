@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      initialRoute: AuthenticationViewRoute,
+      initialRoute: HomeViewRoute,
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }

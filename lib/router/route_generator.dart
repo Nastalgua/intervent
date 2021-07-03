@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intervent/router/route_constants.dart';
-import 'package:intervent/ui/authentication.dart';
 import 'package:intervent/ui/home.dart';
 
 class RouteGenerator {
@@ -10,8 +9,6 @@ class RouteGenerator {
     switch (settings.name) {
       case HomeViewRoute:
         return MaterialPageRoute(builder: (_) => Home());
-      case AuthenticationViewRoute:
-        return MaterialPageRoute(builder: (_) => Authentication());
       default:
         return _errorRoute();
     }

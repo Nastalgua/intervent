@@ -32,7 +32,7 @@ class AuthProvider with ChangeNotifier {
 
   }
 
-  Future googleLogout() async {
+  static Future googleLogout() async {
     await FirebaseAuth.instance.signOut();
   }
 
