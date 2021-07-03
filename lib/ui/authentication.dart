@@ -89,7 +89,7 @@ class Authentication extends StatelessWidget {
                   opacity: 0.25,
                   color: Color(0xFF656565),
                   offset: Offset(0, 4),
-                  sigma: 6,    
+                  sigma: 6,
                 )
                 // icon: Icon(Icons.login),
               ),

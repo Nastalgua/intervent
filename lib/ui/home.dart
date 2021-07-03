@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intervent/providers/auth_provider.dart';
 import 'package:intervent/ui/authentication.dart';
 import 'package:intervent/ui/chats.dart';
 

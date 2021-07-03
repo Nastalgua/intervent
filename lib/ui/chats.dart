@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intervent/providers/auth_provider.dart';
+import 'package:intervent/widgets/chats/tag_bar.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 
 class Chats extends StatefulWidget {
@@ -10,7 +14,11 @@ class Chats extends StatefulWidget {
 }
 
 class _ChatsState extends State<Chats> {
+  final user = FirebaseAuth.instance.currentUser!;
+
   Widget _header(BuildContext context) {
+    String firstName = user.displayName!.split(" ")[0];
+
     return Positioned(
       top: MediaQuery.of(context).size.height * 0.1,
       child: RichText(
@@ -26,7 +34,7 @@ class _ChatsState extends State<Chats> {
           children: <TextSpan>[
             TextSpan(text: "How are you doing,\n"),
             TextSpan(
-              text: "Matthew",
+              text: firstName,
               style: TextStyle(fontWeight: FontWeight.bold)
             ),
             TextSpan(text: "?")
@@ -40,6 +48,7 @@ class _ChatsState extends State<Chats> {
     return SimpleShadow(
       child: Container(
         height: MediaQuery.of(context).size.height * 0.75,
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: Color.fromRGBO(247, 247, 247, 1),
           borderRadius: BorderRadius.only(
@@ -47,6 +56,14 @@ class _ChatsState extends State<Chats> {
             topRight: Radius.circular(29)
           )
         ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+          child: Column(
+            children: [
+              TagBar()
+            ],
+          ),
+        )
       ),
       opacity: 0.25,
       color: Color(0xFFCBCBCB),
@@ -66,11 +83,43 @@ class _ChatsState extends State<Chats> {
             topRight: Radius.circular(29)
           )
         ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.logout),
+                color: Colors.red[400],
+                iconSize: 30,
+                onPressed: () {
+                  AuthProvider.googleLogout();
+                },
+              )
+            ],
+          ),
+        ),
       ),
       opacity: 0.25,
       color: Color(0xFFCBCBCB),
       offset: Offset(0, -4),
       sigma: 4, 
+    );
+  }
+
+  Widget _findButton() {
+    return ElevatedButton(
+      onPressed: () {},
+      child: SizedBox(
+        height: 28,
+        width: 28,
+        child: SvgPicture.asset("assets/icons/magnifier.svg")
+      ),
+      style: ElevatedButton.styleFrom(
+        shape: CircleBorder(),
+        padding: EdgeInsets.all(15),
+        primary: Color(0xFF9EC2B8), // <-- Button color
+        onPrimary: Color(0xFF92B2A9), // <-- Splash color
+      ),
     );
   }
 
@@ -85,7 +134,13 @@ class _ChatsState extends State<Chats> {
           children: [
             _header(context),
             _mainBody(context),
-            _footerBar(context)
+            Stack(
+              alignment: Alignment.center,
+              children: [ 
+                _footerBar(context),
+                _findButton()
+              ]
+            )
           ],
         ),
       ),
