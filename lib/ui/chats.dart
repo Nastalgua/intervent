@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intervent/widgets/chats/tag_item.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 
 class Chats extends StatefulWidget {
@@ -86,11 +85,7 @@ class _ChatsState extends State<Chats> {
           children: [
             _header(context),
             _mainBody(context),
-            _footerBar(context),
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.3,
-              child: TagItem(name: "Name", selected: true)
-            ),
+            _footerBar(context)
           ],
         ),
       ),
