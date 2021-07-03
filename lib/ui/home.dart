@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
@@ -6,9 +7,23 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Container(
-        alignment: Alignment.center,
-        child: Text("Home Page"),
+      child: Scaffold(
+        body: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Something went wrong..."));
+            } else if (snapshot.hasData) {
+              return Center(
+                child: Text("Got some data!")
+              );
+            }
+
+            return Container();
+          },
+        ),
       ),
     );
   }
