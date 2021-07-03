@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "138453526261",
+    "project_id": "intervent-44ddb",
+    "storage_bucket": "intervent-44ddb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:138453526261:android:ea519c48f5eaf17ee047bc",
+        "android_client_info": {
+          "package_name": "com.example.intervent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "138453526261-lslr035r5lplv2f095ibfshrl5fpv27t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.intervent",
+            "certificate_hash": "75348d4676f51c389a587fc395511ae13ef09b45"
+          }
+        },
+        {
+          "client_id": "138453526261-fc20ulak43fapqghjvihbp69tocpffun.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTP7dGIzem8qx2VVLHZ0lC1dG6DMzv0U8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "138453526261-fc20ulak43fapqghjvihbp69tocpffun.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
