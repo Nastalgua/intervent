@@ -11,7 +11,9 @@ class RouteGenerator {
       case HomeViewRoute:
         return MaterialPageRoute(builder: (_) => Home());
       case MessagesViewRoute:
-        return MaterialPageRoute(builder: (_) => Messages("test"));
+        return MaterialPageRoute(
+          builder: (_) => Messages(id: (args as String))
+        );
       default:
         return _errorRoute();
     }

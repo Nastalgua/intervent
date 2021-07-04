@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intervent/router/route_constants.dart';
 
 class ChatItem extends StatelessWidget {
   Color color;
   String to;
-  String date; //update every time user talks with other person
+  String id;
+  DateTime date; //update every time user talks with other person
   
-  ChatItem(this.to, this.color, this.date);
+  ChatItem(this.to, this.color, this.date, this.id);
+
+  String formattedDate() {
+    return "${this.date.month}/${this.date.day}/${this.date.year}";
+  }
 
   Widget _userCircle(BuildContext context){
     return Row(
@@ -55,7 +61,7 @@ class ChatItem extends StatelessWidget {
         ),
         child: RichText(
           text: TextSpan(
-            text: this.date,
+            text: this.formattedDate(),
             style: GoogleFonts.poppins(
               textStyle: TextStyle( 
                 fontWeight: FontWeight.w300,
@@ -72,7 +78,12 @@ class ChatItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: TextButton(
-        onPressed: null, // put in later
+        onPressed: () {
+          Navigator.of(context).pushNamed(
+            MessagesViewRoute,
+            arguments: this.id
+          );
+        }, // put in later
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[

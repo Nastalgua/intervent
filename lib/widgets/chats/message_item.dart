@@ -1,20 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intervent/models/message.dart';
 
 class MessageItem extends StatelessWidget {
-  bool isMe;
-  String body;
+  Message msg;
+  final user = FirebaseAuth.instance.currentUser!;
 
-  MessageItem(this.isMe, this.body);
+  MessageItem(this.msg);
+
+  bool isMe() {
+    return user.uid == this.msg.userId;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-        margin: isMe
+        margin: this.isMe()
             ? EdgeInsets.only(top: 8, bottom: 8, left: 80, right: 10)
             : EdgeInsets.only(top: 8, bottom: 8, right: 80, left: 10),
         decoration: BoxDecoration(
-          color: isMe ? Color(0xFFFFFFFF) : Color(0xFF9EC2B8),
-          borderRadius: isMe
+          color: this.isMe() ? Color(0xFFFFFFFF) : Color(0xFF9EC2B8),
+          borderRadius: this.isMe()
                         ? BorderRadius.only(
                             bottomLeft: Radius.circular(15),
                             bottomRight: Radius.circular(15),
@@ -27,9 +34,9 @@ class MessageItem extends StatelessWidget {
                           )
         ),
         child: Text(
-          body,
+          this.msg.body,
           style: TextStyle(
-            color: isMe ? Colors.black : Colors.white
+            color: this.isMe() ? Colors.black : Colors.white
           ),
         )
     );

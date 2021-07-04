@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intervent/constants/colors_gen.dart';
 import 'package:intervent/models/chat.dart';
 import 'package:intervent/providers/auth_provider.dart';
 import 'package:intervent/widgets/chats/tag_bar.dart';
-import 'package:provider/provider.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 import 'package:intervent/widgets/chats/chat_item.dart';
 
@@ -19,19 +19,11 @@ class Chats extends StatefulWidget {
 
 class _ChatsState extends State<Chats> {
 
-  //temporary
-  List users = [
-    ["Michaeadadasal", Colors.red, "6/07/2021"],
-    ["Ivanadaasda", Colors.blue, "6/09/2021"],
-    ["Matthedsadsdasdabsdasbjdabjskaadw", Colors.green, "6/21/2021"],
-    ["Matthedsadaadw", Colors.green, "6/21/2021"],
-    ["Matthedsadaadw", Colors.green, "6/21/2021"],
-    ["Matthedsadaadw", Colors.green, "6/21/2021"],
-  ];
-
   final user = FirebaseAuth.instance.currentUser!;
   final CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
   final CollectionReference chatsRef = FirebaseFirestore.instance.collection('chats');
+
+  List<String> userChats = [];
 
   Widget _header(BuildContext context) {
     String firstName = user.displayName!.split(" ")[0];
@@ -61,7 +53,7 @@ class _ChatsState extends State<Chats> {
     );
   }
 
-  Widget _mainBody(BuildContext context) {
+  Widget _mainBody(BuildContext context, userDoc) {
     return SimpleShadow(
       child: Container(
         height: MediaQuery.of(context).size.height * 0.75,
@@ -83,15 +75,27 @@ class _ChatsState extends State<Chats> {
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.5,
-                child: ListView(
-                  padding: EdgeInsets.symmetric(vertical: 7),
-                  scrollDirection: Axis.vertical,
-                  children: [
-                    ...(users).map((info) {
-                      return ChatItem(info[0], info[1], info[2]);
-                    })
-                  ],
-                ),
+                child: StreamBuilder<QuerySnapshot> (
+                  stream: chatsRef.snapshots(),
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasData) {
+                      return new ListView(
+                        children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                          Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                          if (!userChats.contains(data['id'])) return CircularProgressIndicator();
+
+                          if (userDoc.get('name') == user.displayName) {
+                            return ChatItem(data['userTwo'], getRandomColor(), DateTime.parse(data['createdAt']), data['id']);
+                          } else {
+                            return ChatItem(data['userOne'], getRandomColor(), DateTime.parse(data['createdAt']), data['id']);
+                          }
+                        }).toList(),
+                      );
+                    }
+
+                    return CircularProgressIndicator();
+                  },                  
+                )
               ),
             ],
           ),
@@ -156,22 +160,23 @@ class _ChatsState extends State<Chats> {
           final tempUserTagSet = (iUser.get('tags') as List<dynamic>).toSet();
           final userTagSet = (currUserData['tags'] as List<dynamic>).toSet();
 
+          if (tempUserTagSet.intersection(userTagSet).isEmpty) return;
+
           // create chat between user
-          Chat chat = new Chat(userOne: iUser.get('id'), userTwo: currUserData['id']);
+          Chat chat = new Chat(userOne: iUser.get('name'), userTwo: currUserData['name']);
           
           chatsRef.doc(chat.id).set({
             'id': chat.id,
             'userOne': chat.userOne,
             'userTwo': chat.userTwo,
             'createdAt': chat.createdAt,
-            'messages': []
+            'messages': [],
           });
 
           usersRef.doc(user.uid).update({ 'chats' : [...currUserData['chats'], chat.id] });
           usersRef.doc(iUser.get('id')).update({ 'chats' : [...iUser.get('chats'), chat.id] });
 
-          print(tempUserTagSet.intersection(userTagSet));
-          
+          userChats.add(chat.id);
         });
       },
       child: SizedBox(
@@ -198,7 +203,17 @@ class _ChatsState extends State<Chats> {
           alignment: Alignment.bottomCenter,
           children: [
             _header(context),
-            _mainBody(context),
+            FutureBuilder(
+              future: usersRef.doc(user.uid).get(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  userChats = [...(snapshot.data as DocumentSnapshot).get('chats')];
+                  return _mainBody(context, (snapshot.data as DocumentSnapshot));
+                }
+
+                return CircularProgressIndicator();
+              }
+            ),
             Stack(
               alignment: Alignment.center,
               children: [ 

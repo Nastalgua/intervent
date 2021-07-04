@@ -1,7 +1,5 @@
-import 'package:uuid/uuid.dart';
 
 class Message {
-  final String id = Uuid().v4();
   final String userId;
   final String body;
 
@@ -10,4 +8,13 @@ class Message {
     required this.body
   });
 
+  static Message fromJSON(Map<String, dynamic> json) => Message(
+    userId: json['userId'],
+    body: json['body']
+  );
+
+  Map<String, dynamic> toJSON() => {
+    'userId': this.userId,
+    'body': this.body
+  };
 }
