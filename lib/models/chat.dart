@@ -1,3 +1,4 @@
+import 'package:intervent/models/message.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intervent/models/message.dart';
 
