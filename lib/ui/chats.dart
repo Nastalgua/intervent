@@ -25,6 +25,20 @@ class _ChatsState extends State<Chats> {
 
   List<String> userChats = [];
 
+  @override
+  void initState() { 
+    super.initState();
+    
+    this.usersRef.snapshots().listen((querySnapshot) {
+      querySnapshot.docChanges.forEach((element) { 
+        setState(() {
+          userChats = [...element.doc.get('chats')];
+        });
+
+      });
+    });
+  }
+
   Widget _header(BuildContext context) {
     String firstName = user.displayName!.split(" ")[0];
 
@@ -79,9 +93,11 @@ class _ChatsState extends State<Chats> {
                   stream: chatsRef.snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasData) {
+                      print(userChats);
                       return new ListView(
                         children: snapshot.data!.docs.map((DocumentSnapshot document) {
                           Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                          print(userChats);
                           if (!userChats.contains(data['id'])) return CircularProgressIndicator();
 
                           if (userDoc.get('name') == user.displayName) {
@@ -207,7 +223,6 @@ class _ChatsState extends State<Chats> {
               future: usersRef.doc(user.uid).get(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  userChats = [...(snapshot.data as DocumentSnapshot).get('chats')];
                   return _mainBody(context, (snapshot.data as DocumentSnapshot));
                 }
 
