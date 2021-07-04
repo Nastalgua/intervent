@@ -59,6 +59,8 @@ flutter:
   assets:
     - assets/icons/google_icon.svg
     - assets/icons/magnifier.svg
+    - assets/icons/send_message.svg
+    - assets/icons/leave_chat.svg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

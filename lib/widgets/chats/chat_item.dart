@@ -8,7 +8,6 @@ class ChatItem extends StatelessWidget {
   
   ChatItem(this.to, this.color, this.date);
 
-  @override
   Widget _userCircle(BuildContext context){
     return Row(
       children: <Widget>[

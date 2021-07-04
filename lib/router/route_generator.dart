@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intervent/router/route_constants.dart';
 import 'package:intervent/ui/home.dart';
+import 'package:intervent/ui/messages.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -9,6 +10,8 @@ class RouteGenerator {
     switch (settings.name) {
       case HomeViewRoute:
         return MaterialPageRoute(builder: (_) => Home());
+      case MessagesViewRoute:
+        return MaterialPageRoute(builder: (_) => Messages("test"));
       default:
         return _errorRoute();
     }

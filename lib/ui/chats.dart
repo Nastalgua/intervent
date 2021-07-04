@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intervent/models/chat.dart';
 import 'package:intervent/providers/auth_provider.dart';
 import 'package:intervent/widgets/chats/tag_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 import 'package:intervent/widgets/chats/chat_item.dart';
-
 
 class Chats extends StatefulWidget {
   Chats({Key? key}) : super(key: key);
@@ -28,6 +30,8 @@ class _ChatsState extends State<Chats> {
   ];
 
   final user = FirebaseAuth.instance.currentUser!;
+  final CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
+  final CollectionReference chatsRef = FirebaseFirestore.instance.collection('chats');
 
   Widget _header(BuildContext context) {
     String firstName = user.displayName!.split(" ")[0];
@@ -134,9 +138,42 @@ class _ChatsState extends State<Chats> {
     );
   }
 
-  Widget _findButton() {
+  Widget _findButton(context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () async {
+        final usersQuerySnapshot = await usersRef.get();
+        final currUserData = await usersRef.doc(user.uid).get();
+        
+        usersQuerySnapshot.docs.forEach((iUser) async {
+          if (iUser.get('id') == currUserData['id']) return; // same user
+
+          final tempUserChatsSet = (iUser.get('chats') as List<dynamic>).toSet();
+          final userChatsSet = (currUserData['chats'] as List<dynamic>).toSet();
+
+          // check if chat between users already exist
+          if (tempUserChatsSet.intersection(userChatsSet).isNotEmpty) return;
+
+          final tempUserTagSet = (iUser.get('tags') as List<dynamic>).toSet();
+          final userTagSet = (currUserData['tags'] as List<dynamic>).toSet();
+
+          // create chat between user
+          Chat chat = new Chat(userOne: iUser.get('id'), userTwo: currUserData['id']);
+          
+          chatsRef.doc(chat.id).set({
+            'id': chat.id,
+            'userOne': chat.userOne,
+            'userTwo': chat.userTwo,
+            'createdAt': chat.createdAt,
+            'messages': []
+          });
+
+          usersRef.doc(user.uid).update({ 'chats' : [...currUserData['chats'], chat.id] });
+          usersRef.doc(iUser.get('id')).update({ 'chats' : [...iUser.get('chats'), chat.id] });
+
+          print(tempUserTagSet.intersection(userTagSet));
+          
+        });
+      },
       child: SizedBox(
         height: 28,
         width: 28,
@@ -166,7 +203,7 @@ class _ChatsState extends State<Chats> {
               alignment: Alignment.center,
               children: [ 
                 _footerBar(context),
-                _findButton()
+                _findButton(context)
               ]
             )
           ],

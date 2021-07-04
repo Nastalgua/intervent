@@ -23,7 +23,7 @@ class AuthProvider with ChangeNotifier {
     final res = await FirebaseAuth.instance.signInWithCredential(credential);
     
     if (res.additionalUserInfo!.isNewUser) {
-      await users.doc(res.user?.uid).set({ 'id': res.user?.uid, 'tags': [] });
+      await users.doc(res.user?.uid).set({ 'id': res.user?.uid, 'tags': [], 'chats': [] });
     }
 
     notifyListeners();
