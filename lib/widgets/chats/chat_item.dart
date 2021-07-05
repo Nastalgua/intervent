@@ -57,7 +57,7 @@ class ChatItem extends StatelessWidget {
     return Align(
       child: Padding(
         padding: EdgeInsets.only(
-          right: 20
+          right: 15
         ),
         child: RichText(
           text: TextSpan(

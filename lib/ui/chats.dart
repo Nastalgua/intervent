@@ -31,9 +31,11 @@ class _ChatsState extends State<Chats> {
     
     this.usersRef.snapshots().listen((querySnapshot) {
       querySnapshot.docChanges.forEach((element) { 
-        setState(() {
-          userChats = [...element.doc.get('chats')];
-        });
+        if (user.uid == element.doc.get('id')) {
+          setState(() {
+            userChats = [...element.doc.get('chats')];
+          });
+        }
 
       });
     });
@@ -93,17 +95,17 @@ class _ChatsState extends State<Chats> {
                   stream: chatsRef.snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasData) {
-                      print(userChats);
                       return new ListView(
                         children: snapshot.data!.docs.map((DocumentSnapshot document) {
                           Map<String, dynamic> data = document.data() as Map<String, dynamic>;
                           print(userChats);
-                          if (!userChats.contains(data['id'])) return CircularProgressIndicator();
-
-                          if (userDoc.get('name') == user.displayName) {
-                            return ChatItem(data['userTwo'], getRandomColor(), DateTime.parse(data['createdAt']), data['id']);
-                          } else {
+                          if (userChats.isEmpty) return Container();
+                          if (!userChats.contains(data['id'])) return Container();
+                          
+                          if (userDoc.get('name') == data['userTwo']) {
                             return ChatItem(data['userOne'], getRandomColor(), DateTime.parse(data['createdAt']), data['id']);
+                          } else {
+                            return ChatItem(data['userTwo'], getRandomColor(), DateTime.parse(data['createdAt']), data['id']);
                           }
                         }).toList(),
                       );
