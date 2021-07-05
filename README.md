@@ -7,5 +7,8 @@
 
 ## Instructions
 1. Download the `.apk`.
-2. Install the `.apk`.
+2. Install the `.apk` on an Android device.
 3. Success! The app has been installed.
+
+### Troubleshoot
+* If you don't have a Android device, you can download a emulator like [Bluestacks](https://www.bluestacks.com/).
